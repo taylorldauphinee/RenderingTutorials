@@ -12,6 +12,9 @@ using UnityEngine;
 
 public class TransformationGrid : MonoBehaviour
 {
+    // add a transformation matrix
+    Matrix4x4 transformation;
+
     public Transform prefab;
 
     public int gridResolution = 10;
@@ -63,8 +66,8 @@ public class TransformationGrid : MonoBehaviour
 
     private void Update()
     {
-        // get the transform components and change them during play mode
-        GetComponents<Transformation>(transformations);
+        // update the transformation matrix with every update
+        UpdateTransformation();
         for (int i = 0, z = 0; z < gridResolution; z++)
         {
             for (int y = 0; y < gridResolution; y++)
@@ -77,13 +80,27 @@ public class TransformationGrid : MonoBehaviour
         }
     }
 
+    void UpdateTransformation()
+    {
+        // get the transform components and change them during play mode
+        GetComponents<Transformation>(transformations);
+        if (transformations.Count > 0)
+        {
+            transformation = transformations[0].Matrix;
+            for (int i = 1; i < transformations.Count; i++)
+            {
+                transformation = transformations[i].Matrix * transformation;
+            }
+        }
+    }
+
     Vector3 TransformPoint(int x, int y, int z)
     {
         Vector3 coordinates = GetCoordinates(x, y, z);
-        for (int i = 0; i < transformations.Count; i++)
-        {
-            coordinates = transformations[i].Apply(coordinates);
-        }
-        return coordinates;
+        //for (int i = 0; i < transformations.Count; i++)
+        //{
+        //    coordinates = transformations[i].Apply(coordinates);
+        //}
+        return transformation.MultiplyPoint(coordinates);
     }
 }
