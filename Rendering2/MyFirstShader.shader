@@ -1,4 +1,4 @@
-﻿/// <summary>
+/// <summary>
 /// MyFirstShader.shader
 /// June 13, 2021
 /// Completed by Taylor Dauphinee
